@@ -1,6 +1,6 @@
 # bag_of_holding
 
-Cache expensive API calls using MongoDB.
+Cache expensive operations using MongoDB.
 
 ## Installation
 
