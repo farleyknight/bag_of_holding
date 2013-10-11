@@ -2,16 +2,27 @@
 
 Cache expensive operations using MongoDB.
 
+## Features
+
+* Stores your expensive operations using an easy to use DSL.
+* Configurable to invalidate cache globally or locally.
+
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'bag_of_holding'
+```ruby
+gem 'bag_of_holding'
+```
 
-And then execute:
+Execute bundler and finally install the initializer:
 
-    $ bundle
-
+```bash
+bundle
+rails g bag_of_holding:install
+```
 
 ## Usage
 
@@ -33,7 +44,7 @@ In short, you need some caching.
 Now, you could create a table in our SQL database to handle this. But once you've grown to 3 or 4 different types of
 data that needs storing, you figure that it's best to have a more generic way to do this caching.
 
-You can add this module to your `ExpensiveOperation`.
+You can add `BagOfHolding` as a module to your `ExpensiveOperation`.
 
 ```ruby
 class ExpensiveOperation
@@ -47,7 +58,6 @@ end
 Now instead of calling `expensive.get_value(...)` you can call `expensive.cached.get_value(...)`. This will 
 check the MongoDB for your expensive operation, and if it's there, hands that back. If not, it makes the call,
 stores it, and hands it back.
-
 
 
 ## Contributing
