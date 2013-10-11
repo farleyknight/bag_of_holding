@@ -44,6 +44,8 @@ In short, you need some caching.
 Now, you could create a table in our SQL database to handle this. But once you've grown to 3 or 4 different types of
 data that needs storing, you figure that it's best to have a more generic way to do this caching.
 
+### Typical Use Case
+
 You can add `BagOfHolding` as a module to your `ExpensiveOperation`.
 
 ```ruby
@@ -55,7 +57,39 @@ class ExpensiveOperation
 end
 ```
 
-Now instead of calling `expensive.get_value(...)` you can call `expensive.cached.get_value(...)`. This will 
+Now you can call that `get_value` like:
+
+```ruby
+expensive = ExpensiveOperation.new
+expensive.cached.get_value(with, some, args) #=> Proceeds to call the method and then cache the result.
+```
+
+Later on, you may call this operation again, but this time it's cached:
+
+
+```ruby
+expensive = ExpensiveOperation.new
+expensive.cached.get_value(with, some, args) #=> This should give you the same value as above, without performing the cache.
+```
+
+Note that this also works on classes as well:
+
+```ruby
+ExpensiveOperation.cached.expensive_class_method(with, some, args) #=> Computing value, and then caching
+ExpensiveOperation.cached.expensive_class_method(with, some, args) #=> Returns cached value
+```
+
+### Debugging
+
+This is all fine and dandy, until you start getting cache hits or cache misses that you're not expecting. The best
+way to debug your caches is with the `caches` method on each object:
+
+```ruby
+user = User.find(4)
+user.caches #=> List of all caches attached to user with id == 4.
+```
+
+Now instead of calling `expensive.get_value(...)` you can call `expensive.cached.get_value(...)`. This will
 check the MongoDB for your expensive operation, and if it's there, hands that back. If not, it makes the call,
 stores it, and hands it back.
 
